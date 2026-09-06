@@ -1,42 +1,29 @@
-// Mobile Menu Toggle
+// Hamburger Menu
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.querySelector('.nav-menu');
 
-if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
-    });
-}
+hamburger.addEventListener('click', () => {
+    navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+});
 
-// Smooth scroll for nav links
-const navLinks = document.querySelectorAll('.nav-link');
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+// Smooth Scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth' });
-            if (navMenu) navMenu.style.display = 'none';
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            }
         }
     });
 });
 
-// Contact Form
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = contactForm.querySelector('input[type="text"]').value;
-        const email = contactForm.querySelector('input[type="email"]').value;
-        const message = contactForm.querySelector('textarea').value;
-        
-        const mailtoLink = `mailto:arunofficial3011265@gmail.com?subject=Portfolio Inquiry from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AFrom: ${encodeURIComponent(email)}`;
-        window.location.href = mailtoLink;
-    });
-}
-
-// Scroll animations
+// Scroll Animation
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -45,28 +32,26 @@ const observerOptions = {
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.animation = 'fadeInUp 0.6s ease-out';
-            observer.unobserve(entry.target);
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
         }
     });
 }, observerOptions);
 
-document.querySelectorAll('.project-card, .skill-card, .cert-card, .timeline-item').forEach(el => {
-    observer.observe(el);
-});
-
-// Add fade-in animation
+// Add animation styles
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .skill-card, .project-card, .contact-card, .about-stats .stat {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
     }
 `;
 document.head.appendChild(style);
+
+// Observe all cards
+document.querySelectorAll('.skill-card, .project-card, .contact-card, .about-stats .stat').forEach(el => {
+    observer.observe(el);
+});
+
+console.log('Portfolio loaded! ✨');
